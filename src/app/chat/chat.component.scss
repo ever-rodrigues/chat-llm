@@ -1,0 +1,23 @@
+$gap: 1.5rem; // espaço vertical entre blocos (comporta as etiquetas didáticas)
+
+.chat {
+  display: flex; flex-direction: column; gap: $gap;
+  height: 100%; max-width: 800px; margin: 0 auto;
+  padding: 1.5rem; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgb(0 0 0 / .08);
+  font-family: system-ui, sans-serif;
+}
+header h1 { margin: 0; font-size: 1.4rem; }
+.messages {
+  flex: 1; min-height: 0; overflow-y: auto; list-style: none; margin: 0;
+  padding: 1.5rem .5rem .5rem; display: flex; flex-direction: column; gap: $gap;
+}
+li { padding: .6rem .9rem; border-radius: 10px; max-width: 80%; p { margin: .2rem 0 0; white-space: pre-wrap; } }
+li.human { align-self: flex-end; background: #dbeafe; }
+li.ai { align-self: flex-start; background: #f3f4f6; }
+.loading { font-style: italic; color: #666; }
+.error { color: #b91c1c; margin: 0; }
+form {
+  display: flex; gap: .5rem;
+  input { flex: 1; padding: .6rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
+  button { padding: .6rem 1.2rem; border: 0; border-radius: 6px; background: #d97757; color: #fff; cursor: pointer; &:disabled { opacity: .6; cursor: not-allowed; } }
+}
