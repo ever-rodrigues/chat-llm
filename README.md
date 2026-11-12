@@ -3,6 +3,38 @@
 Chat em Angular 22 que conversa com o Claude (Anthropic) usando o framework **LangChain**.
 Projeto de aula: a chamada ao LLM é feita direto do navegador.
 
+## O que os alunos verão na branch `webconf2`
+
+A branch `webconf2` (`git checkout webconf2`) traz o **código final da aula** de Rotas e Múltiplas Conversas.
+Nada precisa ser escrito do zero: o roteiro de explicação está em [`GUIA-AULA.md`](./GUIA-AULA.md) e os comentários
+`[AULA · ...]` e atributos `data-label` espalhados pelo código marcam cada conceito.
+
+**Comportamento do app (`npm start` → http://localhost:4200):**
+
+- `/` redireciona para `/chat` (nova conversa).
+- Sidebar com **+ Nova conversa**, a lista de conversas e **Configurações**; o item da rota ativa fica destacado.
+- Ao enviar a primeira pergunta em `/chat`, a conversa é criada e a URL vira `/chat/<id>`.
+- `/chat/<id>` reabre a conversa; id inexistente mostra uma nova conversa, sem erro.
+- `/configuracoes` edita o Prompt de Sistema (Salvar / Cancelar); o cabeçalho do chat mostra o "Prompt ativo".
+- Conversas, mensagens e prompt sobrevivem ao reload (`localStorage`).
+- Qualquer rota desconhecida volta para `/chat`.
+
+**Arquivos para olhar:**
+
+| Arquivo | O que mostra |
+| --- | --- |
+| `src/app/app.routes.ts` | Tabela de rotas, `:id`, redirect e `**` |
+| `src/app/app.config.ts` | `provideRouter(routes)` |
+| `src/app/app.ts` / `app.html` | Casca com sidebar, `routerLink`, `routerLinkActive`, `router-outlet` |
+| `src/app/chat/chat.service.ts` | Estado global com Signals, múltiplas conversas e persistência |
+| `src/app/chat/chat.component.ts` | Leitura do `:id` com `ActivatedRoute` e navegação com `Router` |
+| `src/app/chat/system-prompt/` | Página de rota com `FormsModule` |
+| `src/app/chat/chat.service.spec.ts` | Testes do serviço (`npm test`) |
+
+**Pré-requisitos:** Node.js `^22.22.3`, `^24.15.0` ou `>=26` (exigência do Angular 22) e uma API key da Anthropic
+(`sk-ant-api03-...`, criada em https://console.anthropic.com/settings/keys) em
+`src/app/infra/anthropic/api-key.ts`. Sem ela o chat responde `401 invalid x-api-key`.
+
 ## Pacotes necessários
 
 | Pacote | Para que serve |
@@ -69,7 +101,8 @@ providers: [
 
 ### 7. ChatService e componente
 
-- `ChatService` mantém `messages`, `loading` e `error` como signals e envia o histórico completo a cada chamada.
+- `ChatService` mantém `chats`, `activeChatId`, `loading` e `error` como signals e envia o histórico completo a cada chamada.
+- As conversas e mensagens são persistidas em `localStorage` (`chat-llm.chats.v1`) e recarregadas ao iniciar.
 - O template exibe `m.text` (e não mais `m.content`, que pode ser um array de blocos).
 
 ### 8. Ajustes de build (`angular.json`)
@@ -81,18 +114,43 @@ Para o esbuild do Angular não falhar:
 "externalDependencies": ["node:fs", "node:path"]
 ```
 
-Além disso, o limite de bundle inicial (`budgets`) subiu de 1MB para 2MB de erro, pois o LangChain aumenta o bundle.
+Além disso, o limite de bundle inicial (`budgets`) tem aviso em 500kB e erro em 2MB. O LangChain deixa o bundle em ~1,5MB, então o
+`npm run build` mostra um **aviso** de orçamento (e de módulos não ESM); isso é esperado e não quebra o build.
 
-### 9. Build
+### 9. Rotas e múltiplas conversas
+
+A aplicação evoluiu de tela única para uma SPA com sidebar:
+
+| Rota | Componente | Uso |
+| --- | --- | --- |
+| `/chat` | `ChatComponent` | Nova conversa |
+| `/chat/:id` | `ChatComponent` | Conversa existente |
+| `/configuracoes` | `SystemPromptComponent` | Edição do Prompt de Sistema |
+
+- `app.routes.ts` define a tabela e `app.config.ts` registra `provideRouter(routes)`.
+- `app.html` tem a sidebar (`routerLink` / `routerLinkActive`) e o `<router-outlet>`.
+- `ChatService` guarda todas as conversas em Signals e sobrevive à navegação.
+- Conversas, mensagens e Prompt de Sistema são persistidos em `localStorage`.
+- Ao abrir `/chat` direto, a sidebar já vem preenchida com o histórico salvo.
+- O Prompt de Sistema aparece no cabeçalho do chat.
+- `ChatComponent` lê o `:id` com `ActivatedRoute.params.subscribe()`.
+
+O roteiro completo da aula, os testes manuais e o quiz estão em
+[`GUIA-AULA.md`](./GUIA-AULA.md).
+
+### 10. Build e testes
 
 ```bash
 npm run build
+npm test
 ```
 
 ## Executar
 
 ```bash
+git checkout webconf2
 npm install
+# coloque sua chave em src/app/infra/anthropic/api-key.ts
 npm start      # http://localhost:4200
 ```
 
@@ -100,8 +158,15 @@ npm start      # http://localhost:4200
 
 ```
 src/app/
+  app.routes.ts                     # tabela de rotas
+  app.ts / app.html / app.scss      # casca + sidebar + router-outlet
   core/llm/llm-client.ts            # contrato do LLM
   infra/anthropic/                  # ChatAnthropic + config + chave
-  chat/                             # ChatService e ChatComponent
-  app.config.ts                     # DI
+  chat/
+    chat.service.ts                 # múltiplas conversas em Signals
+    chat.component.*                # conversa ativa (/chat e /chat/:id)
+    chat.service.spec.ts            # testes do serviço
+    system-prompt/                  # página /configuracoes
+  app.config.ts                     # DI + provideRouter
+GUIA-AULA.md                        # roteiro, testes manuais e quiz
 ```
