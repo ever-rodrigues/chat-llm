@@ -48,3 +48,6 @@ Thumbs.db
 
 # OpenCode session notes
 .opencode/
+
+# Sobras de compilação TS
+/src/**/*.js
