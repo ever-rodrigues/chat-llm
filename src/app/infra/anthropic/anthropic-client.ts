@@ -23,7 +23,15 @@ export class AnthropicClient extends LlmClient {
     try {
       return await this.model.invoke([...messages]);
     } catch (e: unknown) {
-      throw new Error(e instanceof Error && e.message ? e.message : 'Falha ao chamar a API do Claude.');
+      const detalhe = e instanceof Error && e.message ? e.message : 'Falha ao chamar a API do Claude.';
+      // [AULA] 401 = chave inválida/expirada. Traduzimos o erro técnico para uma
+      // instrução acionável: o aluno sabe o que fazer sem abrir o DevTools.
+      if (/\b401\b|authentication_error|invalid x-api-key/i.test(detalhe)) {
+        throw new Error(
+          'API key da Anthropic inválida ou expirada (401). Gere uma chave em console.anthropic.com e atualize src/app/infra/anthropic/api-key.ts.',
+        );
+      }
+      throw new Error(detalhe);
     }
   }
 }

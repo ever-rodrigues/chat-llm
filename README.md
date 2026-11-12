@@ -95,7 +95,8 @@ A aplicação evoluiu de tela única para uma SPA com sidebar:
 | `/configuracoes` | `SystemPromptComponent` | Edição do Prompt de Sistema |
 
 - `app.routes.ts` define a tabela e `app.config.ts` registra `provideRouter(routes)`.
-- `app.html` tem a sidebar (`routerLink` / `routerLinkActive`) e o `<router-outlet>`.
+- `app.html` tem a casca com `<app-sidebar>` e o `<router-outlet>`.
+- A sidebar é um componente próprio (`sidebar/`), com `routerLink` / `routerLinkActive`.
 - `ChatService` guarda todas as conversas em Signals e sobrevive à navegação.
 - Conversas, mensagens e Prompt de Sistema são persistidos em `localStorage`.
 - Ao abrir `/chat` direto, a sidebar já vem preenchida com o histórico salvo.
@@ -123,7 +124,8 @@ npm start      # http://localhost:4200
 ```
 src/app/
   app.routes.ts                     # tabela de rotas
-  app.ts / app.html / app.scss      # casca + sidebar + router-outlet
+  app.ts / app.html / app.scss      # casca (layout + router-outlet)
+  sidebar/                          # menu lateral (routerLink/routerLinkActive)
   core/llm/llm-client.ts            # contrato do LLM
   infra/anthropic/                  # ChatAnthropic + config + chave
   chat/

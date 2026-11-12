@@ -1,52 +1,11 @@
+// [AULA] A casca cuida apenas do layout: a sidebar e o conteúdo lado a lado.
+// Os estilos da sidebar migraram para sidebar.component.scss e agora são
+// encapsulados naquele componente.
 .layout {
   display: flex;
   gap: 1.5rem;
   height: calc(100dvh - 3rem - 1.2rem);
   font-family: system-ui, sans-serif;
-}
-
-.sidebar {
-  width: 240px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  overflow-y: auto;
-  padding: 1.5rem 0.75rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
-
-  a {
-    padding: 0.5rem 0.7rem;
-    border-radius: 6px;
-    color: #333;
-    text-decoration: none;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:hover {
-      background: #f3f4f6;
-    }
-
-    &.ativo {
-      background: #fde8e0;
-      color: #b4532f;
-      font-weight: 600;
-    }
-  }
-
-  .vazio {
-    margin: 0;
-    padding: 0 0.7rem;
-    font-size: 0.8rem;
-    color: #888;
-  }
-
-  .config {
-    margin-top: auto;
-  }
 }
 
 .conteudo {

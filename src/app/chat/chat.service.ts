@@ -127,8 +127,13 @@ export class ChatService {
    * Id inexistente (ex.: link antigo) cai em "conversa nova".
    */
   carregarConversaPorId(id: string | null): void {
-    this.activeChatId.set(id && this.chats().some((c) => c.id === id) ? id : null);
-    this.error.set(null);
+    const novoId = id && this.chats().some((c) => c.id === id) ? id : null;
+    // [AULA · Cuidado] Só limpa o erro quando a conversa ativa muda de verdade.
+    // Ao criar uma conversa, o submit navega para /chat/:id e o id recebido é o
+    // MESMO que criarConversa já gravou. Limpar sempre apagaria o erro da chamada
+    // que acabou de falhar — e a tela ficaria sem resposta e sem aviso nenhum.
+    if (novoId !== this.activeChatId()) this.error.set(null);
+    this.activeChatId.set(novoId);
   }
 
   /** Envia a pergunta e devolve o id da conversa usada (criada aqui se ainda não existia). */

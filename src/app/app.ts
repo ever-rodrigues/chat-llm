@@ -1,18 +1,14 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ChatService } from './chat/chat.service';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
-  // [AULA] Em standalone, cada diretiva usada no template precisa estar em `imports`.
-  // Sem RouterOutlet/RouterLink/RouterLinkActive aqui, o template não reconhece
-  // <router-outlet> nem routerLink.
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  // [AULA] Em standalone, cada diretiva/componente usado no template precisa estar
+  // em `imports`. A casca só usa o <router-outlet> e o <app-sidebar>: o routerLink e
+  // o routerLinkActive agora vivem na SidebarComponent, que importa o que precisa.
+  imports: [RouterOutlet, SidebarComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
-  // [AULA · Signals] A sidebar lê chat.chats() direto: quando o ChatService cria uma
-  // conversa, o signal muda e o menu se atualiza sozinho, sem subscribe manual.
-  protected readonly chat = inject(ChatService);
-}
+export class App {}

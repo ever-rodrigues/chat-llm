@@ -53,4 +53,24 @@ describe('ChatService', () => {
     recarregado.carregarConversaPorId(id);
     expect(recarregado.activeMessages()).toHaveLength(2);
   });
+
+  it('mantém o erro visível ao navegar para a conversa recém-criada', async () => {
+    const invoke = vi.fn().mockRejectedValue(new Error('401 invalid x-api-key'));
+    TestBed.configureTestingModule({
+      providers: [{ provide: LlmClient, useValue: { invoke } }],
+    });
+    const service = TestBed.inject(ChatService);
+
+    const id = await service.send('Pergunta sem chave válida');
+    expect(service.error()).toContain('invalid x-api-key');
+
+    // É exatamente o que o ChatComponent faz depois do send: navega para /chat/:id.
+    // O id é o mesmo que criarConversa já gravou, então o erro NÃO pode ser limpo.
+    service.carregarConversaPorId(id);
+    expect(service.error()).toContain('invalid x-api-key');
+
+    // Já trocar de conversa limpa o aviso da conversa anterior.
+    service.carregarConversaPorId(null);
+    expect(service.error()).toBeNull();
+  });
 });
