@@ -1,0 +1,10 @@
+<div class="system-prompt" data-label="app-system-prompt · SystemPromptComponent: define o papel e as regras da IA (SystemMessage enviada em cada chamada)">
+  <label for="system-prompt">Prompt do Sistema (editável a cada interação)</label>
+  <textarea
+    id="system-prompt"
+    rows="3"
+    placeholder="Ex.: Você é um professor paciente que responde em português..."
+    [ngModel]="chat.systemPrompt()"
+    (ngModelChange)="chat.systemPrompt.set($event)"
+  ></textarea>
+</div>

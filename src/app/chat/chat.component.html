@@ -1,0 +1,36 @@
+<section class="chat" data-label="app-chat · ChatComponent: tela principal que junta prompt, mensagens e formulário">
+  <header data-label="header · cabeçalho com o título da página">
+    <h1>Chat com Claude</h1>
+  </header>
+
+  <app-system-prompt />
+
+  <ul class="messages" data-label="ul.messages · histórico da conversa (visibleMessages() do ChatComponent)">
+    @for (m of visibleMessages(); track $index) {
+      <li [class]="m.type" [attr.data-label]="'li.' + m.type + ' · uma mensagem do histórico (@for)'">
+        <strong>{{ m.type === 'human' ? 'Humano' : 'Claude' }}</strong>
+        <p>{{ m.text }}</p>
+      </li>
+    }
+    @if (chat.loading()) {
+      <li class="ai loading" data-label="li.loading · aviso de espera enquanto a IA responde (chat.loading())">Claude está digitando...</li>
+    }
+  </ul>
+
+  @if (chat.error(); as err) {
+    <p class="error" role="alert" data-label="p.error · mostra falhas da chamada à IA (chat.error())">{{ err }}</p>
+  }
+
+  <form (ngSubmit)="submit()" data-label="form · envia a pergunta (submit() do ChatComponent)">
+    <input
+      data-label="input · texto da pergunta (signal query())" title="input · texto da pergunta (signal query())"
+      name="query"
+      placeholder="Digite sua pergunta..."
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+      [disabled]="chat.loading()"
+      autocomplete="off"
+    />
+    <button type="submit" data-label="button · dispara o envio (submit())" title="button · dispara o envio (submit())" [disabled]="chat.loading()">Enviar</button>
+  </form>
+</section>

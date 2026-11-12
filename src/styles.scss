@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: #f9fafb; }
+app-root { display: block; position: relative; outline: 1px dashed #059669; margin: 1.5rem; min-height: calc(100dvh - 3rem); padding-top: 1.2rem; }
+app-root::before {
+  content: 'app-root · App (app.ts)';
+  position: absolute; top: 0; right: 0; z-index: 10;
+  background: #059669; color: #fff; font: 600 .6rem/1 monospace; padding: 2px 4px;
+}
+
+/* Rótulos didáticos: mostram o nome de cada parte da página (atributo data-label). */
+[data-label] { position: relative; outline: 1px dashed #7c3aed; outline-offset: 2px; }
+[data-label]::before {
+  content: attr(data-label);
+  position: absolute; top: -.8rem; left: 0; z-index: 10;
+  background: #7c3aed; color: #fff; font: 600 .6rem/1 monospace;
+  padding: 2px 4px; border-radius: 3px; white-space: nowrap; pointer-events: none;
+}
