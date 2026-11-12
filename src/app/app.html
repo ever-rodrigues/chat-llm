@@ -1,0 +1,58 @@
+<!--
+  [AULA · Componente raiz = "casca" da aplicação]
+  A sidebar fica FORA do router-outlet, então não é recriada a cada navegação.
+  Só a área <main> troca de conteúdo conforme a rota.
+-->
+<div class="layout">
+  <nav class="sidebar" data-label="nav.sidebar · menu lateral com routerLink e routerLinkActive">
+    <!--
+      [Conceito 3 — routerLink] Navega sem recarregar a página (SPA). Um <a href> comum faria
+      requisição nova ao servidor e perderia todo o estado dos signals.
+      [Conceito 4 — routerLinkActive] Aplica a classe "ativo" quando a URL do link está ativa.
+      O match é por PREFIXO: "/chat" ficaria ativo também em "/chat/123". Por isso
+      [routerLinkActiveOptions]="{ exact: true }": ativo só se a URL for exatamente "/chat".
+    -->
+    <a
+      routerLink="/chat"
+      routerLinkActive="ativo"
+      [routerLinkActiveOptions]="{ exact: true }"
+      data-label="a · routerLink fixo: abre uma conversa nova"
+      >+ Nova conversa</a
+    >
+
+    @if (chat.chats().length === 0) {
+      <p class="vazio">Nenhuma conversa ainda.</p>
+    }
+
+    <!--
+      [Conceito 3 — routerLink com parâmetro] Forma de array: ['/chat', c.id] vira "/chat/<id>".
+      O array evita montar string na mão e já cuida de caracteres especiais.
+      [Control flow] @for com `track c.id`: identifica cada item pela chave estável,
+      então o Angular só mexe no DOM do que realmente mudou.
+    -->
+    @for (c of chat.chats(); track c.id) {
+      <a
+        [routerLink]="['/chat', c.id]"
+        routerLinkActive="ativo"
+        [attr.data-label]="'a · routerLink com parâmetro: /chat/' + c.id"
+        >{{ c.titulo }}</a
+      >
+    }
+
+    <a
+      routerLink="/configuracoes"
+      routerLinkActive="ativo"
+      class="config"
+      data-label="a · routerLink fixo: tela do prompt do sistema"
+      >Configurações</a
+    >
+  </nav>
+
+  <main class="conteudo">
+    <!-- [Conceito 1 — router-outlet] Marca ONDE o componente da rota ativa será renderizado.
+         /chat e /chat/:id -> ChatComponent; /configuracoes -> SystemPromptComponent. -->
+    <router-outlet
+      data-label="router-outlet · aqui o Angular renderiza o componente da rota ativa"
+    />
+  </main>
+</div>

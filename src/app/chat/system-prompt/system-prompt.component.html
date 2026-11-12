@@ -1,10 +1,36 @@
-<div class="system-prompt" data-label="app-system-prompt · SystemPromptComponent: define o papel e as regras da IA (SystemMessage enviada em cada chamada)">
-  <label for="system-prompt">Prompt do Sistema (editável a cada interação)</label>
+<section
+  class="system-prompt"
+  data-label="app-system-prompt · tela de configurações (rota /configuracoes)"
+>
+  <h1>Prompt do Sistema</h1>
+  <label for="system-prompt">
+    Define o papel e as regras da IA (SystemMessage enviada em cada chamada)
+  </label>
+  <!-- [Two-way binding] [(ngModel)]="texto" = banana-in-a-box: junta [ngModel] (classe -> tela)
+       e (ngModelChange) (tela -> classe). Exige FormsModule em `imports` do componente. -->
   <textarea
     id="system-prompt"
-    rows="3"
+    rows="6"
     placeholder="Ex.: Você é um professor paciente que responde em português..."
-    [ngModel]="chat.systemPrompt()"
-    (ngModelChange)="chat.systemPrompt.set($event)"
+    [(ngModel)]="texto"
+    data-label="textarea · two-way binding [(ngModel)] com a propriedade texto"
   ></textarea>
-</div>
+  <p class="dica">O prompt vale para as próximas mensagens enviadas em qualquer conversa.</p>
+  <div class="acoes">
+    <button
+      type="button"
+      class="secundario"
+      (click)="cancelar()"
+      data-label="button · router.navigate sem salvar"
+    >
+      Cancelar
+    </button>
+    <button
+      type="button"
+      (click)="salvar()"
+      data-label="button · salva no ChatService e navega de volta para /chat"
+    >
+      Salvar
+    </button>
+  </div>
+</section>

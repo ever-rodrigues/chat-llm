@@ -1,29 +1,65 @@
-<section class="chat" data-label="app-chat · ChatComponent: tela principal que junta prompt, mensagens e formulário">
+<section
+  class="chat"
+  data-label="app-chat · ChatComponent: tela principal que junta mensagens e formulário"
+>
   <header data-label="header · cabeçalho com o título da página">
-    <h1>Chat com Claude</h1>
+    <!-- [Conceito 6] Título dinâmico: depende só do getter emConversa (presença do :id na URL). -->
+    <h1>{{ emConversa ? chat.activeChat()?.titulo : 'Nova conversa' }}</h1>
+    <!-- Confirmação visual do prompt que será enviado na próxima chamada. -->
+    <a
+      routerLink="/configuracoes"
+      class="prompt-ativo"
+      data-label="a · routerLink para editar o prompt do sistema"
+      [title]="chat.systemPrompt() || 'Nenhum prompt de sistema definido'"
+    >
+      @if (chat.systemPromptPreview(); as prompt) {
+        Prompt ativo: {{ prompt }}
+      } @else {
+        Definir prompt do sistema
+      }
+    </a>
   </header>
 
-  <app-system-prompt />
-
-  <ul class="messages" data-label="ul.messages · histórico da conversa (visibleMessages() do ChatComponent)">
+  <ul
+    class="messages"
+    data-label="ul.messages · histórico da conversa (visibleMessages() do ChatComponent)"
+  >
+    <!-- [Control flow] @for substitui *ngFor; `track` é obrigatório. Aqui $index basta porque
+         as mensagens só são acrescentadas ao fim e nunca reordenadas. -->
     @for (m of visibleMessages(); track $index) {
-      <li [class]="m.type" [attr.data-label]="'li.' + m.type + ' · uma mensagem do histórico (@for)'">
+      <li
+        [class]="m.type"
+        [attr.data-label]="'li.' + m.type + ' · uma mensagem do histórico (@for)'"
+      >
         <strong>{{ m.type === 'human' ? 'Humano' : 'Claude' }}</strong>
         <p>{{ m.text }}</p>
       </li>
     }
+    <!-- [Control flow] @if substitui *ngIf, sem precisar importar CommonModule. -->
     @if (chat.loading()) {
-      <li class="ai loading" data-label="li.loading · aviso de espera enquanto a IA responde (chat.loading())">Claude está digitando...</li>
+      <li
+        class="ai loading"
+        data-label="li.loading · aviso de espera enquanto a IA responde (chat.loading())"
+      >
+        Claude está digitando...
+      </li>
     }
   </ul>
 
   @if (chat.error(); as err) {
-    <p class="error" role="alert" data-label="p.error · mostra falhas da chamada à IA (chat.error())">{{ err }}</p>
+    <p
+      class="error"
+      role="alert"
+      data-label="p.error · mostra falhas da chamada à IA (chat.error())"
+    >
+      {{ err }}
+    </p>
   }
 
   <form (ngSubmit)="submit()" data-label="form · envia a pergunta (submit() do ChatComponent)">
     <input
-      data-label="input · texto da pergunta (signal query())" title="input · texto da pergunta (signal query())"
+      data-label="input · texto da pergunta (signal query())"
+      title="input · texto da pergunta (signal query())"
       name="query"
       placeholder="Digite sua pergunta..."
       [ngModel]="query()"
@@ -31,6 +67,13 @@
       [disabled]="chat.loading()"
       autocomplete="off"
     />
-    <button type="submit" data-label="button · dispara o envio (submit())" title="button · dispara o envio (submit())" [disabled]="chat.loading()">Enviar</button>
+    <button
+      type="submit"
+      data-label="button · dispara o envio (submit())"
+      title="button · dispara o envio (submit())"
+      [disabled]="chat.loading()"
+    >
+      Enviar
+    </button>
   </form>
 </section>

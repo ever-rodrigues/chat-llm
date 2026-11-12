@@ -1,3 +1,57 @@
-.system-prompt { display: flex; flex-direction: column; gap: .25rem; }
-label { font-size: .85rem; color: #444; }
-textarea { padding: .6rem; border: 1px solid #ccc; border-radius: 6px; font: inherit; resize: vertical; }
+.system-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
+  font-family: system-ui, sans-serif;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+label {
+  font-size: 0.85rem;
+  color: #444;
+}
+
+textarea {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font: inherit;
+  resize: vertical;
+}
+
+.dica {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+
+  button {
+    padding: 0.6rem 1.2rem;
+    border: 0;
+    border-radius: 6px;
+    background: #d97757;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .secundario {
+    background: #e5e7eb;
+    color: #333;
+  }
+}

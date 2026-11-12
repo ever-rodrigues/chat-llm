@@ -69,7 +69,8 @@ providers: [
 
 ### 7. ChatService e componente
 
-- `ChatService` mantém `messages`, `loading` e `error` como signals e envia o histórico completo a cada chamada.
+- `ChatService` mantém `chats`, `activeChatId`, `loading` e `error` como signals e envia o histórico completo a cada chamada.
+- As conversas e mensagens são persistidas em `localStorage` (`chat-llm.chats.v1`) e recarregadas ao iniciar.
 - O template exibe `m.text` (e não mais `m.content`, que pode ser um array de blocos).
 
 ### 8. Ajustes de build (`angular.json`)
@@ -83,7 +84,28 @@ Para o esbuild do Angular não falhar:
 
 Além disso, o limite de bundle inicial (`budgets`) subiu de 1MB para 2MB de erro, pois o LangChain aumenta o bundle.
 
-### 9. Build
+### 9. Rotas e múltiplas conversas
+
+A aplicação evoluiu de tela única para uma SPA com sidebar:
+
+| Rota | Componente | Uso |
+| --- | --- | --- |
+| `/chat` | `ChatComponent` | Nova conversa |
+| `/chat/:id` | `ChatComponent` | Conversa existente |
+| `/configuracoes` | `SystemPromptComponent` | Edição do Prompt de Sistema |
+
+- `app.routes.ts` define a tabela e `app.config.ts` registra `provideRouter(routes)`.
+- `app.html` tem a sidebar (`routerLink` / `routerLinkActive`) e o `<router-outlet>`.
+- `ChatService` guarda todas as conversas em Signals e sobrevive à navegação.
+- Conversas, mensagens e Prompt de Sistema são persistidos em `localStorage`.
+- Ao abrir `/chat` direto, a sidebar já vem preenchida com o histórico salvo.
+- O Prompt de Sistema aparece no cabeçalho do chat.
+- `ChatComponent` lê o `:id` com `ActivatedRoute.params.subscribe()`.
+
+O roteiro completo da aula, os testes manuais e o quiz estão em
+[`GUIA-AULA.md`](./GUIA-AULA.md).
+
+### 10. Build
 
 ```bash
 npm run build
@@ -100,8 +122,13 @@ npm start      # http://localhost:4200
 
 ```
 src/app/
+  app.routes.ts                     # tabela de rotas
+  app.ts / app.html / app.scss      # casca + sidebar + router-outlet
   core/llm/llm-client.ts            # contrato do LLM
   infra/anthropic/                  # ChatAnthropic + config + chave
-  chat/                             # ChatService e ChatComponent
-  app.config.ts                     # DI
+  chat/
+    chat.service.ts                 # múltiplas conversas em Signals
+    chat.component.*                # conversa ativa (/chat e /chat/:id)
+    system-prompt/                  # página /configuracoes
+  app.config.ts                     # DI + provideRouter
 ```
